@@ -4,7 +4,7 @@ inputs:
   automerge:
     description: "allow auto merge the PR"
     required: true
-    default: "true"
+    default: "false"
 
 runs:
   using: "composite"
