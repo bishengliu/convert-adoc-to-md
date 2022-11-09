@@ -38,8 +38,8 @@ runs:
         labels: automerge
 
     - name: auto merge the PR
-      uses: "pascalgn/automerge-action@v0.15.5"
       if: ${{ inputs.automerge == 'true' }}
+      uses: "pascalgn/automerge-action@v0.15.5"
       env:
         GITHUB_TOKEN: "${{ github.token }}"
         PULL_REQUEST: ${{ steps.conversion-pr.outputs.pull-request-number }}
