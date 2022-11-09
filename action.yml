@@ -4,6 +4,7 @@ inputs:
   automerge:
     description: "allow auto merge the PR"
     required: true
+    default: "true"
 
 runs:
   using: "composite"
@@ -40,5 +41,5 @@ runs:
       uses: "pascalgn/automerge-action@v0.15.5"
       if: ${{ inputs.automerge == 'true' }}
       env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        GITHUB_TOKEN: "${{ github.token }}"
         PULL_REQUEST: ${{ steps.conversion-pr.outputs.pull-request-number }}
