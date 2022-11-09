@@ -1,0 +1,44 @@
+name: "convert adoc to md"
+description: "convert the asciidoc documentation into github compatible markdowns via a PR"
+inputs:
+  automerge:
+    description: "allow auto merge the PR"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: install asciidoctor
+      run: sudo apt-get install asciidoctor -y
+      shell: bash
+
+    - name: install pandoc
+      run: |
+        sudo wget https://github.com/jgm/pandoc/releases/download/2.0.0.1/pandoc-2.0.0.1-1-amd64.deb
+        sudo dpkg -i pandoc-2.0.0.1-1-amd64.deb && sudo rm -rfv pandoc-2.0.0.1-1-amd64.deb
+      shell: bash
+
+    - name: conversion
+      run: |
+        chmod +x ${{ env.CONVERTER_SCRIPT_FILE }}
+        ${{ env.CONVERTER_SCRIPT_FILE }}
+      shell: bash
+
+    - name: create the pull request
+      id: conversion-pr
+      uses: peter-evans/create-pull-request@v4
+      with:
+        add-paths: |
+          *.md
+        delete-branch: true
+        commit-message: convert .adoc to markdowns
+        branch: convert-asciidoc-to-markdowns
+        title: "convert asciidoc to markdowns"
+        labels: automerge
+
+    - name: auto merge the PR
+      uses: "pascalgn/automerge-action@v0.15.5"
+      if: ${{ inputs.automerge == 'true' }}
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        PULL_REQUEST: ${{ steps.conversion-pr.outputs.pull-request-number }}
