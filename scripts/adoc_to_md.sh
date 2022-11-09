@@ -4,17 +4,12 @@ function convert_adoc_to_markdown() {
     local adoc_file=$1
     local filename_without_extension=".$(echo $adoc_file | rev | cut -d'.' -f2 | rev)"
 
-    echo $filename_without_extension
-
     local md_file="${filename_without_extension}.md"
     local xml_file="${filename_without_extension}.xml"
 
-    echo $md_file
-    echo $xml_file
-
     # remove the md file if exists
     if [[ -f $md_file ]]; then
-        rm -rfv $md_file
+        rm -rfv $md_file >/dev/null 2>&1
     fi
 
     # Convert asciidoc to docbook using asciidoctor
@@ -31,7 +26,7 @@ function convert_adoc_to_markdown() {
     pandoc -f docbook -t gfm --columns=120 # extend line breaks to 120
 
     # clean up xml file
-    rm -rfv $xml_file
+    rm -rfv $xml_file >/dev/null 2>&1
 }
 
 export -f convert_adoc_to_markdown
